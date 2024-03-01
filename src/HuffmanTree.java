@@ -19,7 +19,7 @@ public class HuffmanTree<T> {
             HuffmanNode<T> left = priorityQueue.poll();
             HuffmanNode<T> right = priorityQueue.poll();
            
-            HuffmanNode<T>  parent = new HuffmanNode<T>(left.frequency + right.frequency, left, right);
+            HuffmanNode<T>  parent = new HuffmanNode<T>(left.getFrequency() + right.getFrequency(), left, right);
             priorityQueue.add(parent);
         }
 

@@ -1,9 +1,10 @@
 
 import java.io.BufferedOutputStream;
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-
+import java.io.FileReader;
 import java.io.IOException;
 
 import java.util.HashMap;
@@ -22,12 +23,13 @@ public class HuffmanSerializer {
 		
 		// Step 2: Build Huffman tree
 		HuffmanNode<Long> root = HuffmanSerializer.huffmanTree.buildTree(frequencies);
+		int totalFreq = root.getFrequency();
 		
 		// Step 3: Generate codes
 		HuffmanSerializer.generateCodes(root, "");
 		
 		// Step 4: Compress data using the generated codes
-		HuffmanSerializer.compressByteStream(bytes, fileName);
+		HuffmanSerializer.compressByteStream(bytes, fileName, totalFreq);
 		
 	}
 	
@@ -65,8 +67,8 @@ public class HuffmanSerializer {
 			// Check for the leaf node
 			if (node.left == null && node.right == null) {
 				// System.out.println(node.character);
-				HuffmanSerializer.charToCodeMap.put((long)node.character, code);
-				HuffmanSerializer.codeToCharMap.put(code, (long)node.character);
+				HuffmanSerializer.charToCodeMap.put((long)node.getCharacter(), code);
+				HuffmanSerializer.codeToCharMap.put(code, (long)node.getCharacter());
 			}
 			HuffmanSerializer.generateCodes(node.left, code + "0");
 			HuffmanSerializer.generateCodes(node.right, code + "1");
@@ -85,7 +87,7 @@ public class HuffmanSerializer {
 	}
 	
 	
-	private static void compressByteStream(byte[] byteStream, String path) throws IOException {
+	private static void compressByteStream(byte[] byteStream, String path, int totalFreq) throws IOException {
 		StringBuilder prefixSB = new StringBuilder();
 		StringBuilder codeSB = new StringBuilder();
 		
@@ -95,6 +97,9 @@ public class HuffmanSerializer {
 		codeChars= codeChars.substring(1, codeChars.length()-1);
 		prefixSB.append(codeChars);
 		prefixSB.append('\n');
+		prefixSB.append(totalFreq);
+		prefixSB.append('\n');
+		
 		
 		for(int i = 0; i < byteStream.length; i++) {
 			long c = (long) (byteStream[i]);
@@ -132,8 +137,11 @@ public class HuffmanSerializer {
 	
 	private static void decompressFile(File outFile) throws IOException {
 		HashMap<String, Byte> codeToCharMap = new HashMap<String,Byte>();
-		
-			//BufferedReader br = new BufferedReader(new FileReader(outFile));
+
+		BufferedReader br = new BufferedReader(new FileReader(outFile));
+		 
+		String encodedString = br.readLine();
+		String[] encodings = encodedString.split(" ");
 
 		
 	}

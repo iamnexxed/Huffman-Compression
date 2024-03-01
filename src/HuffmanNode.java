@@ -1,8 +1,9 @@
 public class HuffmanNode<T> implements Comparable<HuffmanNode<T>> {
-    int frequency;
-    T character;
-    HuffmanNode<T> left;
-    HuffmanNode<T> right;
+    private int frequency;
+    private T character;
+    
+    public HuffmanNode<T> left;
+    public HuffmanNode<T> right;
 
     public HuffmanNode(T i, int frequency) {
         this.character = i;
@@ -31,21 +32,6 @@ public class HuffmanNode<T> implements Comparable<HuffmanNode<T>> {
         this.character = character;
     }
 
-    public HuffmanNode<T> getLeft() {
-        return left;
-    }
-
-    public void setLeft(HuffmanNode<T> left) {
-        this.left = left;
-    }
-
-    public HuffmanNode<T> getRight() {
-        return right;
-    }
-
-    public void setRight(HuffmanNode<T> right) {
-        this.right = right;
-    }
 
     @Override
     public int compareTo(HuffmanNode<T> node) {
