@@ -1,15 +1,15 @@
-public class HuffmanNode implements Comparable<HuffmanNode> {
+public class HuffmanNode<T> implements Comparable<HuffmanNode<T>> {
     int frequency;
-    char character;
-    HuffmanNode left;
-    HuffmanNode right;
+    T character;
+    HuffmanNode<T> left;
+    HuffmanNode<T> right;
 
-    public HuffmanNode(char character, int frequency) {
-        this.character = character;
+    public HuffmanNode(T i, int frequency) {
+        this.character = i;
         this.frequency = frequency;
     }
 
-    public HuffmanNode(int frequency, HuffmanNode left, HuffmanNode right) {
+    public HuffmanNode(int frequency, HuffmanNode<T> left, HuffmanNode<T> right) {
         this.frequency = frequency;
         this.left = left;
         this.right = right;
@@ -23,32 +23,32 @@ public class HuffmanNode implements Comparable<HuffmanNode> {
         this.frequency = frequency;
     }
 
-    public char getCharacter() {
+    public T getCharacter() {
         return character;
     }
 
-    public void setCharacter(char character) {
+    public void setCharacter(T character) {
         this.character = character;
     }
 
-    public HuffmanNode getLeft() {
+    public HuffmanNode<T> getLeft() {
         return left;
     }
 
-    public void setLeft(HuffmanNode left) {
+    public void setLeft(HuffmanNode<T> left) {
         this.left = left;
     }
 
-    public HuffmanNode getRight() {
+    public HuffmanNode<T> getRight() {
         return right;
     }
 
-    public void setRight(HuffmanNode right) {
+    public void setRight(HuffmanNode<T> right) {
         this.right = right;
     }
 
     @Override
-    public int compareTo(HuffmanNode node) {
+    public int compareTo(HuffmanNode<T> node) {
         return this.frequency - node.frequency;
     }
 
