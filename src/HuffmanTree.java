@@ -1,12 +1,9 @@
-
-
 import java.util.Map;
-import java.util.PriorityQueue;
 
 public class HuffmanTree<T> {
 
-	public HuffmanNode<T> buildTree(Map<T, Integer> charFreqMap) {
-        PriorityQueue<HuffmanNode<T>> priorityQueue = new PriorityQueue<>();
+    public HuffmanNode<T> buildTree(CustomHashMap<T, Integer> charFreqMap) {
+        CustomPriorityQueue<HuffmanNode<T>> priorityQueue = new CustomPriorityQueue<>();
 
         for (T key : charFreqMap.keySet()) {
             if (charFreqMap.get(key) > 0) {
@@ -14,19 +11,14 @@ public class HuffmanTree<T> {
             }
         }
 
-        while (priorityQueue.size() > 1) {
-        	
+        while (!priorityQueue.isEmpty() && priorityQueue.size() > 1) {
             HuffmanNode<T> left = priorityQueue.poll();
             HuffmanNode<T> right = priorityQueue.poll();
-           
-            HuffmanNode<T>  parent = new HuffmanNode<T>(left.getFrequency() + right.getFrequency(), left, right);
+
+            HuffmanNode<T> parent = new HuffmanNode<T>(left.getFrequency() + right.getFrequency(), left, right);
             priorityQueue.add(parent);
         }
 
         return priorityQueue.poll();
     }
-    
-    
-
-    
 }

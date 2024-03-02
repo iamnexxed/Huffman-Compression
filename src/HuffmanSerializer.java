@@ -12,14 +12,18 @@ import java.util.Map;
 
 
 public class HuffmanSerializer {
-	
+	private static final String encodedNameExtension = ".huffman";
+	private static final HuffmanTree<Long> huffmanTree = new HuffmanTree<>();
+	// Use CustomHashMap instead of HashMap
+	private static final CustomHashMap<Long, String> charToCodeMap = new CustomHashMap<>();
+	private static final CustomHashMap<String, Long> codeToCharMap = new CustomHashMap<>();
 
 	public static void Encode(String fileName) throws IOException {
 		File fileOP = new File(fileName);
 		byte[] bytes = HuffmanSerializer.generateBytes(fileOP);
 		
 		// Step 1: Build frequency table
-		HashMap<Long, Integer> frequencies = HuffmanSerializer.getByteFrequencies(bytes);
+		CustomHashMap<Long, Integer> frequencies = HuffmanSerializer.getByteFrequencies(bytes);
 		
 		// Step 2: Build Huffman tree
 		HuffmanNode<Long> root = HuffmanSerializer.huffmanTree.buildTree(frequencies);
@@ -34,33 +38,27 @@ public class HuffmanSerializer {
 	}
 	
 	public static void Decode(String fileName) throws IOException {
-
 			File file = new File(fileName);
 			HuffmanSerializer.decompressFile(file);	
 			file.delete();
 	
 	}
-	
-	private static final String encodedNameExtension = ".huffman";
-	
-	private static final HuffmanTree<Long> huffmanTree = new HuffmanTree<Long>();
-	private static final Map<Long, String> charToCodeMap = new HashMap<>();
-	private static final Map<String, Long> codeToCharMap = new HashMap<>();
-	
-	private static HashMap<Long, Integer> getByteFrequencies(byte[] bytes) {
-		HashMap<Long, Integer> countMap = new HashMap<Long, Integer>();
-		for (int i = 0; i < bytes.length;i++) {
-			long value = bytes[i];
 
-			if (!countMap.containsKey(value)) {
-				countMap.put(value,1);
+
+	private static CustomHashMap<Long, Integer> getByteFrequencies(byte[] bytes) {
+		CustomHashMap<Long, Integer> countMap = new CustomHashMap<>();
+		for (byte b : bytes) {
+			long value = b & 0xFF; // Corrected for sign extension
+			Integer count = countMap.get(value);
+			if (count == null) {
+				countMap.put(value, 1);
 			} else {
-				countMap.put(value, countMap.get(value) + 1);
+				countMap.put(value, count + 1);
 			}
-		}	
-
- 		return countMap;	
+		}
+		return countMap;
 	}
+
 	
 	private static void generateCodes(HuffmanNode<Long> node, String code) {
 		if (node != null) {
