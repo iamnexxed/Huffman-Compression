@@ -22,10 +22,9 @@ public class Main {
 		System.out.println("Encoded file size: " + encodedFileSize + " bytes");
 
 		// Decompress the file
-		HuffmanSerializer.Decode(encodedFilePath);
+		String decompressedFilePath = HuffmanSerializer.Decode(encodedFilePath);
 		System.out.println("Decompression completed.");
 
-		String decompressedFilePath = HuffmanSerializer.decodedPath + originalFile.getName();
 		File decompressedFile = new File(decompressedFilePath);
 		long decompressedFileSize = decompressedFile.length();
 		System.out.println("Decompressed file size: " + decompressedFileSize + " bytes");
