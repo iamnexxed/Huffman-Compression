@@ -13,7 +13,7 @@ import java.util.HashMap;
 
 public class HuffmanSerializer {
 	private static final String encodedNameExtension = ".huffman";
-	private static final String decodedNamePrefix= "decoded_";
+	private static final String decodedPath= "data/extracted_data/";
 	
 	private static final HuffmanTree<Byte> huffmanTree = new HuffmanTree<>();
 
@@ -106,8 +106,8 @@ public class HuffmanSerializer {
 			byte c = (byteStream[i]);
 			String data = HuffmanSerializer.charToCodeMap.get(c);
 			if(data == null) 
-				System.out.println(c);
-//			else
+				System.out.println("Null Character: " + c);
+
 			codeSB.append(data);
 		}
 		String absPath = path + HuffmanSerializer.encodedNameExtension;
@@ -165,9 +165,14 @@ public class HuffmanSerializer {
 
 		StringBuilder characterSB = new StringBuilder(); 
 		
-		String outFileName = inFile.toString();
+		String outFileName = HuffmanSerializer.decodedPath;
+		outFileName = outFileName + inFile.getName();
 		outFileName = outFileName.substring(
 				0, outFileName.length() - HuffmanSerializer.encodedNameExtension.length());
+
+		
+		
+		
 		BufferedOutputStream outputWriter = new BufferedOutputStream(new FileOutputStream(outFileName));
 		int readByte = 0;
 		while((readByte = bIS.read())!= -1) {
@@ -190,9 +195,7 @@ public class HuffmanSerializer {
 		
 		bIS.close();
 		outputWriter.close();
-		
-		
-		
+			
 	}
 	
 }
