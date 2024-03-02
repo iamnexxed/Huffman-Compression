@@ -1,8 +1,8 @@
-import java.util.Map;
+import java.util.HashMap;
 
 public class HuffmanTree<T> {
 
-    public HuffmanNode<T> buildTree(CustomHashMap<T, Integer> charFreqMap) {
+    public HuffmanNode<T> buildTree(HashMap<T, Integer> charFreqMap) {
         CustomPriorityQueue<HuffmanNode<T>> priorityQueue = new CustomPriorityQueue<>();
 
         for (T key : charFreqMap.keySet()) {

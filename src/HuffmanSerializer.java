@@ -1,4 +1,5 @@
 
+import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.File;
@@ -6,67 +7,67 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
-
 import java.util.HashMap;
-import java.util.Map;
+
 
 
 public class HuffmanSerializer {
 	private static final String encodedNameExtension = ".huffman";
-	private static final HuffmanTree<Long> huffmanTree = new HuffmanTree<>();
-	// Use CustomHashMap instead of HashMap
-	private static final CustomHashMap<Long, String> charToCodeMap = new CustomHashMap<>();
-	private static final CustomHashMap<String, Long> codeToCharMap = new CustomHashMap<>();
+	private static final String decodedNamePrefix= "decoded_";
+	
+	private static final HuffmanTree<Byte> huffmanTree = new HuffmanTree<>();
 
-	public static void Encode(String fileName) throws IOException {
+	private static final HashMap<Byte, String> charToCodeMap = new HashMap<>();
+	private static final HashMap<String, Byte> codeToCharMap = new HashMap<>();
+
+	public static String Encode(String fileName) throws IOException {
 		File fileOP = new File(fileName);
 		byte[] bytes = HuffmanSerializer.generateBytes(fileOP);
 		
 		// Step 1: Build frequency table
-		CustomHashMap<Long, Integer> frequencies = HuffmanSerializer.getByteFrequencies(bytes);
+		HashMap<Byte, Integer> frequencies = HuffmanSerializer.getByteFrequencies(bytes);
 		
 		// Step 2: Build Huffman tree
-		HuffmanNode<Long> root = HuffmanSerializer.huffmanTree.buildTree(frequencies);
+		HuffmanNode<Byte> root = HuffmanSerializer.huffmanTree.buildTree(frequencies);
 		int totalFreq = root.getFrequency();
 		
 		// Step 3: Generate codes
 		HuffmanSerializer.generateCodes(root, "");
 		
 		// Step 4: Compress data using the generated codes
-		HuffmanSerializer.compressByteStream(bytes, fileName, totalFreq);
+		return HuffmanSerializer.compressByteStream(bytes, fileName, totalFreq);
 		
 	}
 	
 	public static void Decode(String fileName) throws IOException {
 			File file = new File(fileName);
 			HuffmanSerializer.decompressFile(file);	
-			file.delete();
 	
 	}
 
 
-	private static CustomHashMap<Long, Integer> getByteFrequencies(byte[] bytes) {
-		CustomHashMap<Long, Integer> countMap = new CustomHashMap<>();
+	private static HashMap<Byte, Integer> getByteFrequencies(byte[] bytes) {
+		HashMap<Byte, Integer> countMap = new HashMap<>();
 		for (byte b : bytes) {
-			long value = b & 0xFF; // Corrected for sign extension
-			Integer count = countMap.get(value);
+			//long value = b & 0xFF; // Corrected for sign extension
+			Integer count = countMap.get(b);
 			if (count == null) {
-				countMap.put(value, 1);
+				countMap.put(b, 1);
 			} else {
-				countMap.put(value, count + 1);
+				countMap.put(b, count + 1);
 			}
 		}
 		return countMap;
 	}
 
 	
-	private static void generateCodes(HuffmanNode<Long> node, String code) {
+	private static void generateCodes(HuffmanNode<Byte> node, String code) {
 		if (node != null) {
 			// Check for the leaf node
 			if (node.left == null && node.right == null) {
-				// System.out.println(node.character);
-				HuffmanSerializer.charToCodeMap.put((long)node.getCharacter(), code);
-				HuffmanSerializer.codeToCharMap.put(code, (long)node.getCharacter());
+				//System.out.println(node.getCharacter());
+				HuffmanSerializer.charToCodeMap.put(node.getCharacter(), code);
+				HuffmanSerializer.codeToCharMap.put(code, node.getCharacter());
 			}
 			HuffmanSerializer.generateCodes(node.left, code + "0");
 			HuffmanSerializer.generateCodes(node.right, code + "1");
@@ -85,7 +86,7 @@ public class HuffmanSerializer {
 	}
 	
 	
-	private static void compressByteStream(byte[] byteStream, String path, int totalFreq) throws IOException {
+	private static String compressByteStream(byte[] byteStream, String path, int totalFreq) throws IOException {
 		StringBuilder prefixSB = new StringBuilder();
 		StringBuilder codeSB = new StringBuilder();
 		
@@ -93,19 +94,25 @@ public class HuffmanSerializer {
 		codeChars = codeChars.replace(", ", " ");
 		// Remove start and end brackets
 		codeChars= codeChars.substring(1, codeChars.length()-1);
+		// To store first line as encoding map
 		prefixSB.append(codeChars);
 		prefixSB.append('\n');
+		// To store first line as frequency count
 		prefixSB.append(totalFreq);
 		prefixSB.append('\n');
-		
+		// Third line to store encodings
 		
 		for(int i = 0; i < byteStream.length; i++) {
-			long c = (long) (byteStream[i]);
-			codeSB.append(HuffmanSerializer.charToCodeMap.get(c));
+			byte c = (byteStream[i]);
+			String data = HuffmanSerializer.charToCodeMap.get(c);
+			if(data == null) 
+				System.out.println(c);
+//			else
+			codeSB.append(data);
 		}
-		
+		String absPath = path + HuffmanSerializer.encodedNameExtension;
 		BufferedOutputStream br = new BufferedOutputStream(
-				new FileOutputStream(path + HuffmanSerializer.encodedNameExtension));
+				new FileOutputStream(absPath));
 		
 		for(int i = 0; i < prefixSB.length(); i++) {
 			br.write(prefixSB.charAt(i));
@@ -130,17 +137,61 @@ public class HuffmanSerializer {
 			br.write(Integer.parseInt(formatted, 2));
 		}
 		br.close();
-		
+		return absPath;
 	}
 	
-	private static void decompressFile(File outFile) throws IOException {
-		HashMap<String, Byte> codeToCharMap = new HashMap<String,Byte>();
+	private static void decompressFile(File inFile) throws IOException {
+		HashMap<String, Byte> codeToCharMap = new HashMap<String, Byte>();
 
-		BufferedReader br = new BufferedReader(new FileReader(outFile));
-		 
+		BufferedReader br = new BufferedReader(new FileReader(inFile));
+		
+		// Get the first line
 		String encodedString = br.readLine();
+		// Find the encoding map from the line
 		String[] encodings = encodedString.split(" ");
+		for (int i = 0; i < encodings.length; i++) {
+			String encoding = encodings[i];
+			String codeChar[] = encoding.split("=");
+			codeToCharMap.put(codeChar[0],Byte.parseByte(codeChar[1]));
+		}
+		
+		int charFrequency = Integer.parseInt(br.readLine());
+		br.close();
+		
+		BufferedInputStream bIS = new BufferedInputStream(new FileInputStream(inFile));
+		
+		while(bIS.read()!='\n');
+		while(bIS.read()!='\n');
 
+		StringBuilder characterSB = new StringBuilder(); 
+		
+		String outFileName = inFile.toString();
+		outFileName = outFileName.substring(
+				0, outFileName.length() - HuffmanSerializer.encodedNameExtension.length());
+		BufferedOutputStream outputWriter = new BufferedOutputStream(new FileOutputStream(outFileName));
+		int readByte = 0;
+		while((readByte = bIS.read())!= -1) {
+			String formStr = Integer.toBinaryString(readByte);
+			String byteFormat = ("00000000" + formStr).substring(formStr.length());
+			characterSB.append(byteFormat);
+		}
+		
+		int currentCharacterCount = 0;
+		String currentCode = "";
+		
+		for (int i = 0; i < characterSB.length(); i++) {
+			currentCode = currentCode + characterSB.charAt(i);
+			if(currentCharacterCount < charFrequency && codeToCharMap.containsKey(currentCode)) {
+				outputWriter.write(codeToCharMap.get(currentCode));
+				currentCode = "";
+				currentCharacterCount++;
+			}	
+		}
+		
+		bIS.close();
+		outputWriter.close();
+		
+		
 		
 	}
 	
