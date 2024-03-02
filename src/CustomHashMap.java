@@ -72,4 +72,23 @@ public class CustomHashMap<K, V> {
         return keys;
     }
 
+    @Override
+    public String toString() {
+        StringBuilder sb = new StringBuilder("{");
+        boolean firstEntry = true;
+        for (int i = 0; i < capacity; i++) {
+            Entry<K, V> entry = table[i];
+            while (entry != null) {
+                if (!firstEntry) {
+                    sb.append(", ");
+                }
+                sb.append(entry.key).append("=").append(entry.value);
+                entry = entry.next;
+                firstEntry = false;
+            }
+        }
+        sb.append("}");
+        return sb.toString();
+    }
+
 }

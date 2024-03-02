@@ -16,6 +16,28 @@ public class HuffmanNode<T> implements Comparable<HuffmanNode<T>> {
         this.right = right;
     }
 
+    @Override
+    public String toString() {
+        return toStringHelper("");
+    }
+
+    private String toStringHelper(String prefix) {
+        StringBuilder sb = new StringBuilder();
+        sb.append(prefix);
+        if (character != null) {
+            sb.append("Char: ").append(character).append(" (Freq: ").append(frequency).append(")\n");
+        } else {
+            sb.append("Node (Freq: ").append(frequency).append(")\n");
+        }
+        if (left != null) {
+            sb.append(left.toStringHelper(prefix + "    "));
+        }
+        if (right != null) {
+            sb.append(right.toStringHelper(prefix + "    "));
+        }
+        return sb.toString();
+    }
+
     public int getFrequency() {
         return frequency;
     }
