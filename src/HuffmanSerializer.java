@@ -13,6 +13,7 @@ import java.util.HashMap;
 
 public class HuffmanSerializer {
 	private static final String encodedNameExtension = ".huffman";
+	private static final String encodedPath = "compressed_data/";
 	private static final String decodedPath = "extracted_data/";
 	
 	private static final HuffmanTree<Byte> huffmanTree = new HuffmanTree<>();
@@ -32,10 +33,16 @@ public class HuffmanSerializer {
 		int totalFreq = root.getFrequency();
 		
 		// Step 3: Generate codes
-		HuffmanSerializer.generateCodes(root, "");
+		if(root.left == null & root.right == null)
+			HuffmanSerializer.generateCodes(root, "0");
+		else 
+			HuffmanSerializer.generateCodes(root, "");
 		
 		// Step 4: Compress data using the generated codes
-		return HuffmanSerializer.compressByteStream(bytes, fileName, totalFreq);
+		return HuffmanSerializer.compressByteStream(
+				bytes, 
+				HuffmanSerializer.encodedPath + fileOP.getName(), 
+				totalFreq);
 		
 	}
 	
@@ -86,7 +93,10 @@ public class HuffmanSerializer {
 	}
 	
 	
-	private static String compressByteStream(byte[] byteStream, String path, int totalFreq) throws IOException {
+	private static String compressByteStream(
+			byte[] byteStream, 
+			String path, 
+			int totalFreq) throws IOException {
 		StringBuilder prefixSB = new StringBuilder();
 		StringBuilder codeSB = new StringBuilder();
 		
@@ -162,7 +172,7 @@ public class HuffmanSerializer {
 		
 		while(bIS.read()!='\n');
 		while(bIS.read()!='\n');
-
+		// System.out.println("Reached last line.");
 		StringBuilder characterSB = new StringBuilder(); 
 		
 		String outFileName = HuffmanSerializer.decodedPath;
@@ -180,6 +190,7 @@ public class HuffmanSerializer {
 			String byteFormat = ("00000000" + formStr).substring(formStr.length());
 			characterSB.append(byteFormat);
 		}
+		// System.out.println("Found last char.");
 		
 		int currentCharacterCount = 0;
 		String currentCode = "";
@@ -192,7 +203,7 @@ public class HuffmanSerializer {
 				currentCharacterCount++;
 			}	
 		}
-		
+		// System.out.println("Almost done.");
 		bIS.close();
 		outputWriter.close();
 		return outFileName;
