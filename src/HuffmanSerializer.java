@@ -13,7 +13,7 @@ import java.util.HashMap;
 
 public class HuffmanSerializer {
 	private static final String encodedNameExtension = ".huffman";
-	private static final String decodedPath = "data/extracted_data/";
+	private static final String decodedPath = "extracted_data/";
 	
 	private static final HuffmanTree<Byte> huffmanTree = new HuffmanTree<>();
 
