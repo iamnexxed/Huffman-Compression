@@ -18,10 +18,13 @@ public class HuffmanSerializer {
 	
 	private static final HuffmanTree<Byte> huffmanTree = new HuffmanTree<>();
 
-	private static final HashMap<Byte, String> charToCodeMap = new HashMap<>();
+	private static final HashMap<Byte, String> charToCodeMap = new HashMap<Byte, String>();
 	private static final HashMap<String, Byte> codeToCharMap = new HashMap<>();
 
 	public static String Encode(String fileName) throws IOException {
+		HuffmanSerializer.charToCodeMap.clear();
+		HuffmanSerializer.codeToCharMap.clear();
+		
 		File fileOP = new File(fileName);
 		byte[] bytes = HuffmanSerializer.generateBytes(fileOP);
 		

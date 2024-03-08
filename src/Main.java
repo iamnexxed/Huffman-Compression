@@ -16,10 +16,10 @@ public class Main {
 		// Get the file names
 		String[] fileNames = dir.list();
 		//System.out.println(fileNames.length);
-		
+
 		// Create an empty list for file info
 		List<FileInfo> fileInfoList = new ArrayList<>();
-		System.out.println("Hang on this might take a while!");
+		System.out.println("Compressing files...");
 		// Loop through each file in the array of file names
 		for(String fileName : fileNames) {
 			// Create a file name relative to the source of the program
@@ -34,7 +34,7 @@ public class Main {
 			
 			File encodedFile = new File(encodedFilePath);
 			long encodedFileSize = encodedFile.length();
-			System.out.println("\nEncoded file path: " + encodedFilePath);
+			System.out.println("Encoded file path: " + encodedFilePath);
 		
 			// Decompress the file
 			
@@ -67,7 +67,7 @@ public class Main {
 
 		// Header for the table
 		System.out.printf(
-				"%-30s %-20s %-20s %-20s %-20s %-20s%n",
+				"%n%-30s %-20s %-20s %-20s %-20s %-20s%n",
 				"File Name", 
 				"bytes", 
 				"Encoded bytes", 
@@ -89,6 +89,6 @@ public class Main {
 
 
 		// Execution done
-		System.out.println("Execution completed successfully!");
+		System.out.println("\nExecution completed successfully!");
 	}
 }
