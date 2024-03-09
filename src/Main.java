@@ -28,9 +28,9 @@ public class Main {
 			long fileSize = file.length();
 			
 
-			long startStackTime = System.currentTimeMillis(); // Start the timer
+			long startTime = System.currentTimeMillis(); // Start the timer
 			String encodedFilePath = HuffmanSerializer.Encode(filePath);
-			long compressionTime = System.currentTimeMillis() - startStackTime; // calculate the time
+			long compressionTime = System.currentTimeMillis() - startTime; // calculate the time
 			
 			File encodedFile = new File(encodedFilePath);
 			long encodedFileSize = encodedFile.length();
@@ -38,9 +38,9 @@ public class Main {
 		
 			// Decompress the file
 			
-			startStackTime = System.currentTimeMillis(); // Start the timer
+			startTime = System.currentTimeMillis(); // Start the timer
 			String decompressedFilePath = HuffmanSerializer.Decode(encodedFilePath);
-			long decompressionTime = System.currentTimeMillis() - startStackTime; // calculate the time
+			long decompressionTime = System.currentTimeMillis() - startTime; // calculate the time
 			
 			File decompressedFile = new File(decompressedFilePath);
 			long decompressedFileSize = decompressedFile.length();
