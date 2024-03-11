@@ -1,15 +1,18 @@
-// Class for storing file information
+// This class holds file statistics related to compression and decompression processes.
 class FileInfo {
-	// file name 
-    public String fileName;
-    // Byte count in the file
-    public long byteCount;
-    public long compressionByteCount;
-    public long compressionTime;
-    public long decompressionTime;
-    public float compressionRatio;
-  
-    // Constructor for creating the file info
+
+    public String fileName; // The name of the file.
+    public long byteCount; // Original file size in bytes.
+    public long compressionByteCount; // File size after compression in bytes.
+    public long compressionTime; // Time taken for compression in milliseconds.
+    public long decompressionTime; // Time taken for decompression in milliseconds.
+    public float compressionRatio; // Compression efficiency ratio.
+
+
+   // Initializes FileInfo with detailed metrics.
+   // Calculates compression ratio as 1 - (compressed size / original size),
+   // ensuring it's not less than 0.
+
     public FileInfo(
     		String fileName, 
     		long byteCount, 
