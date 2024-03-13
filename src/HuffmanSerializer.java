@@ -19,7 +19,7 @@ public class HuffmanSerializer {
 	// Static HuffmanTree instance for building and manipulating Huffman trees.
 	private static final HuffmanTree<Byte> huffmanTree = new HuffmanTree<>();
 	// Maps for character to Huffman code conversion and vice versa.
-	private static final HashMap<Byte, String> charToCodeMap = new HashMap<Byte, String>();
+	private static final HashMap<Byte, String> charToCodeMap = new HashMap<>();
 	private static final HashMap<String, Byte> codeToCharMap = new HashMap<>();
 
 	// Encodes a file into Huffman compressed format.
